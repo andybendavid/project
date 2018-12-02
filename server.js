@@ -239,6 +239,11 @@ app.post('/update', function(req, res) {
 
 function up(db,bfile,rrr,sss,callback) {
   console.log(bfile);
+	db.collection('grades').update({r_id: rrr.id}, {
+			$set: {
+			    "rname": rrr.name
+			}
+			});	
  db.collection('restaurants').update({_id: ObjectId(rrr.id)}, {
 			$set: {
 	"name":rrr.name,
