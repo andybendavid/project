@@ -213,7 +213,8 @@ app.get('/edit',function(req,res) {
 app.post('/update', function(req, res) {
     var sampleFile;
 
-    if (!req.files.sampleFile) {
+ if (!req.files.sampleFile) {
+        res.send('No file was uploaded.');
 	MongoClient.connect(mongourl, function(err, db) {
 		assert.equal(err,null);
 			db.collection('restaurants').update({_id: ObjectId(req.body.id)}, {
@@ -233,8 +234,9 @@ app.post('/update', function(req, res) {
 			    "rname": req.body.name
 			}
 			});	
-	});
-        res.redirect('/')
+	}); 
+	res.redirect('/')
+        return;
     }
 
     MongoClient.connect(mongourl,function(err,db) {
