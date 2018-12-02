@@ -209,7 +209,67 @@ app.get('/edit',function(req,res) {
 	}
 });
 
-app.post('/update',function(req,res) {
+
+app.post('/update', function(req, res) {
+    var sampleFile;
+
+    if (!req.files.sampleFile) {
+        res.send('No file was uploaded.');
+        return;
+    }
+
+    MongoClient.connect(mongourl,function(err,db) {
+      console.log('Connected to mlab.com');
+      assert.equal(null,err);
+      up(db, req.files.sampleFile,req.body,req.session, function(result) {
+        db.close();
+        if (result.insertedId != null) {
+          res.status(200);
+          res.redirect('/')
+        } else {
+          res.status(500);
+          res.end(JSON.stringify(result));
+        }
+      });
+    });
+});
+
+
+function up(db,bfile,rrr,sss,callback) {
+  console.log(bfile);
+ db.collection('restaurants').update({_id: ObjectId(rrr.id)}, {
+			$set: {
+	"name":rrr.name,
+	"borough": rrr.borough,
+	"cuisine": rrr.cuisine,
+	"street":rrr.street,
+	"building":rrr.building,
+	"zipcode":rrr.zipcode,
+	"gps1":rrr.gps1,
+	"gps2":rrr.gps2,
+	"photo" : new Buffer(bfile.data).toString('base64'),
+	"photo mimetype" : bfile.mimetype
+			}
+ });
+db.collection('grades').update({r_id: req.body.id}, {
+			$set: {
+			    "rname": rrr.name
+			}
+			});	  
+	  
+  }, function(err,result) {
+    if (err) {
+      console.log('insertOne Error: ' + JSON.stringify(err));
+      result = err;
+    } else {
+      console.log("Inserted _id = " + result.insertId);
+    }
+    callback(result);
+  });
+}
+
+
+/*app.post('/update',function(req,res) {
 	MongoClient.connect(mongourl, function(err, db) {
 		assert.equal(err,null);
 			db.collection('restaurants').update({_id: ObjectId(req.body.id)}, {
@@ -231,7 +291,7 @@ app.post('/update',function(req,res) {
 			});	
 	});
 	res.redirect('/');
-});
+});*/
 
 
 app.get('/remove',function(req,res) {
