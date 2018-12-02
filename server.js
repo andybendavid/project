@@ -250,15 +250,13 @@ function up(db,bfile,rrr,sss,callback) {
 	"photo" : new Buffer(bfile.data).toString('base64'),
 	"photo mimetype" : bfile.mimetype
 			}  	  
-  }, function(err,result) {
-    if (err) {
-      console.log('insertOne Error: ' + JSON.stringify(err));
-      result = err;
-    } else {
-      console.log("Inserted _id = " + result.insertId);
-    }
-    callback(result);
   });
+	db.collection('grades').update({r_id: req.body.id}, {
+			$set: {
+			    "rname": req.body.name
+			}
+			});	
+	
 }
 
 
