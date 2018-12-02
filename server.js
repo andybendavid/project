@@ -212,7 +212,9 @@ app.get('/edit',function(req,res) {
 
 app.post('/update', function(req, res) {
     var sampleFile;
-
+ MongoClient.connect(mongourl,function(err,db) {
+      console.log('Connected to mlab.com');
+      assert.equal(null,err);
     if (!req.files.sampleFile) {
 	 db.collection('grades').update({r_id: req.body.id}, {
 			$set: {
@@ -230,6 +232,7 @@ app.post('/update', function(req, res) {
 	"gps1":req.body.gps1,
 	"gps2":req.body.gps2}
 			 });
+	    });
         return;
     }
 
