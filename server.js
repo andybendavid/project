@@ -42,7 +42,7 @@ app.post('/upload', function(req, res) {
     MongoClient.connect(mongourl,function(err,db) {
       console.log('Connected to mlab.com');
       assert.equal(null,err);
-      create(db, req.file.sampleFile,req.body,req.session, function(result) {
+      create(db, req.files.sampleFile,req.body,req.session, function(result) {
         db.close();
         if (result.insertedId != null) {
           res.status(200);
