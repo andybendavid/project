@@ -250,12 +250,12 @@ function up(db,bfile,rrr,sss,callback) {
 	"photo" : new Buffer(bfile.data).toString('base64'),
 	"photo mimetype" : bfile.mimetype
 			}
- });
+ }
 db.collection('grades').update({r_id: req.body.id}, {
 			$set: {
 			    "rname": rrr.name
 			}
-			});	  
+			}	  
 	  
   }, function(err,result) {
     if (err) {
