@@ -251,12 +251,6 @@ function up(db,bfile,rrr,sss,callback) {
 	"photo mimetype" : bfile.mimetype
 			}  	  
   });
-	db.collection('grades').update({r_id: req.body.id}, {
-			$set: {
-			    "rname": req.body.name
-			}
-			});	
-	
 }
 
 
