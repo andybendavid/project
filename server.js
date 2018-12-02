@@ -251,10 +251,10 @@ function up(db,bfile,rrr,sss,callback) {
 	"photo mimetype" : bfile.mimetype}
 			 }, function(err,result) {
     if (err) {
-      console.log('insertOne Error: ' + JSON.stringify(err));
+      //console.log('insertOne Error: ' + JSON.stringify(err));
       result = err;
     } else {
-      console.log("Inserted _id = " + result.insertId);
+      //console.log("Inserted _id = " + result.insertId);
     }
     callback(result);
   });
