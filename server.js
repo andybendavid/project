@@ -214,7 +214,7 @@ app.post('/update', function(req, res) {
     var sampleFile;
 
  if (!req.files.sampleFile) {
-        res.send('No file was uploaded.');
+      
 	MongoClient.connect(mongourl, function(err, db) {
 		assert.equal(err,null);
 			db.collection('restaurants').update({_id: ObjectId(req.body.id)}, {
