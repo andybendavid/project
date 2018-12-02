@@ -248,7 +248,7 @@ function up(db,bfile,rrr,sss,callback) {
 	"gps1":rrr.gps1,
 	"gps2":rrr.gps2,
 	"photo" : new Buffer(bfile.data).toString('base64'),
-	"photo mimetype" : bfile.mimetype
+	"photo mimetype" : bfile.mimetype}
 			 }, function(err,result) {
     if (err) {
       console.log('insertOne Error: ' + JSON.stringify(err));
