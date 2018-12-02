@@ -253,7 +253,7 @@ function up(db,bfile,rrr,sss,callback) {
 , function(err,result) {
     if (err) {
       console.log('insertOne Error: ' + JSON.stringify(err));
-      //result = err;
+      result = err;
     } else {
       console.log("Inserted _id = " + result.insertId);
     }
