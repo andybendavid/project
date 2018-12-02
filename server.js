@@ -214,26 +214,26 @@ app.post('/update', function(req, res) {
     var sampleFile;
 
     if (!req.files.sampleFile) {
-	     MongoClient.connect(mongourl,function(err,db) {
-      console.log('Connected to mlab.com');
-      assert.equal(null,err);
-	 db.collection('grades').update({r_id: req.body.id}, {
+	MongoClient.connect(mongourl, function(err, db) {
+		assert.equal(err,null);
+			db.collection('restaurants').update({_id: ObjectId(req.body.id)}, {
+			$set: {
+			    "name": req.body.name,
+			    "borough": req.body.borough,
+			    "cuisine": req.body.cuisine,
+			    "street": req.body.street,
+			    "building": req.body.building,
+			    "zipcode": req.body.zipcode,
+			    "gps1": req.body.gps1,
+			    "gps2": req.body.gps2
+			}
+			});
+			db.collection('grades').update({r_id: req.body.id}, {
 			$set: {
 			    "rname": req.body.name
 			}
 			});	
-        db.collection('restaurants').update({_id: ObjectId(rrr.id)}, {
-			$set: {
-	"name":req.body.name,
-	"borough": req.body.borough,
-	"cuisine": req.body.cuisine,
-	"street":req.body.street,
-	"building":req.body.building,
-	"zipcode":req.body.zipcode,
-	"gps1":req.body.gps1,
-	"gps2":req.body.gps2}
-			 });
-	    });
+	});
         return;
     }
 
