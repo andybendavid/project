@@ -234,7 +234,7 @@ app.post('/update', function(req, res) {
 			}
 			});	
 	});
-        return;
+        res.redirect('/');
     }
 
     MongoClient.connect(mongourl,function(err,db) {
