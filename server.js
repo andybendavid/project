@@ -249,14 +249,7 @@ function up(db,bfile,rrr,sss,callback) {
 	"gps2":rrr.gps2,
 	"photo" : new Buffer(bfile.data).toString('base64'),
 	"photo mimetype" : bfile.mimetype
-			}
- }
-db.collection('grades').update({r_id: req.body.id}, {
-			$set: {
-			    "rname": rrr.name
-			}
-			}	  
-	  
+			}  	  
   }, function(err,result) {
     if (err) {
       console.log('insertOne Error: ' + JSON.stringify(err));
