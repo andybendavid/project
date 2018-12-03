@@ -153,22 +153,17 @@ app.get('/showdetails', function(req,res) {
 				break;
 			}
 		}
-		if ((!items[i].gps1)|| (!items[i].gps2)){
+		if ((items[i].photo_mimetype == "application/pdf") && (!items[i].gps1) || 
+		    (items[i].photo_mimetype == "application/pdf") && (!items[i].gps2)) {
 			db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
-					res.render('detailsnomap', {r: items[i], g: rnames});
-		
-			});
-		} 	
-		
-		
-			if ((!items[i].photo)|| (items[i].photo_mimetype == "application/pdf")){
-			db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
-					res.render('detailsnophoto', {r: items[i], g: rnames});
-		
+					res.render('detailsnpnm', {r: items[i], g: rnames});
 			});
 		} 
-		
-		
+		if (!items[i].photo) {
+			db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
+					res.render('detailsnophoto', {r: items[i], g: rnames});
+			});
+		} 
 		db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
 					res.render('details', {r: items[i], g: rnames});
 		});
@@ -435,8 +430,8 @@ app.get('/api/restaurant/borough/Homantin',function(req,res){
     var result = {};
 MongoClient.connect(mongourl, function(err, db) {
 	assert.equal(err,null);
-    result =db.collection("restaurants").find().toArray(function(err,items){
-	res.status(200).json(result).end();
+    db.collection("restaurants").find({borough: "Homantin"}).toArray(function(err,items){
+	res.status(200).json(items).end();
 	
 });
 	});
