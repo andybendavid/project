@@ -12,6 +12,11 @@ var formidable = require('formidable');
 var fileUpload = require('express-fileupload');
 
 
+var Task = require('./api/models/todoListModel');
+var routes = require('./api/routes/todoListRoutes');
+routes(app);
+
+
 
 
 
@@ -24,7 +29,7 @@ var users = new Array(
 	{name: 'student', password: ''}
 );
 
-app.set('view engine','ejs');
+app.set('view engine','ejs','js');
 
 app.use(session({
   name: 'session',
