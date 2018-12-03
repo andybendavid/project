@@ -13,7 +13,7 @@ var fileUpload = require('express-fileupload');
 
 var Task = require('./api/models/todoListModel');
 var routes = require('./api/routes/todoListRoutes');
-routes(app);
+
 
 var SECRETKEY1 = 'project';
 var SECRETKEY2 = 'ouhk';
