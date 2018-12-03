@@ -11,6 +11,10 @@ var mongourl = 'mongodb://doublechi123:doublechi123@ds149682.mlab.com:49682/chi9
 var formidable = require('formidable');
 var fileUpload = require('express-fileupload');
 
+var Task = require('./api/models/todoListModel');
+var routes = require('./api/routes/todoListRoutes');
+routes(app);
+
 var SECRETKEY1 = 'project';
 var SECRETKEY2 = 'ouhk';
 
@@ -29,7 +33,9 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(fileUpload());   
+app.use(fileUpload());
+
+
 
 app.get('/',function(req,res) {
 	console.log(req.session);
