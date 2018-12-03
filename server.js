@@ -156,7 +156,7 @@ app.get('/showdetails', function(req,res) {
 			
 		
 		
-			if (!items[i].photo))
+			if (!items[i].photo){
 			db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
 					res.render('detailsnophoto', {r: items[i], g: rnames});
 		
