@@ -427,7 +427,7 @@ app.get('/gps', function(req,res) {
 
 app.get('/api/restaurant/borough/:place',function(req,res){
 
-    var items = {};
+    var result = {};
 MongoClient.connect(mongourl, function(err, db) {
 	assert.equal(err,null);
     db.collection("restaurants").find({borough:req.params.place}).toArray(function(err,items}{
