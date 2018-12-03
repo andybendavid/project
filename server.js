@@ -153,6 +153,16 @@ app.get('/showdetails', function(req,res) {
 				break;
 			}
 		}
+			
+		
+		
+			if (!items[i].photo))
+			db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
+					res.render('detailsnophoto', {r: items[i], g: rnames});
+		
+			});
+		} 
+		
 		
 		db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
 					res.render('details', {r: items[i], g: rnames});
