@@ -11,8 +11,8 @@ var mongourl = 'mongodb://doublechi123:doublechi123@ds149682.mlab.com:49682/chi9
 var formidable = require('formidable');
 var fileUpload = require('express-fileupload');
 
-var Task = require('./api/models/todoListModel');
-var routes = require('./api/routes/todoListRoutes');
+
+
 
 
 var SECRETKEY1 = 'project';
