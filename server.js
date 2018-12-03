@@ -17,7 +17,7 @@ var SECRETKEY2 = 'ouhk';
 var users = new Array(
 	{name: 'demo', password: ''},
 	{name: 'guest', password: 'guest'},
-	{name: 'user', password: 'user'}
+	{name: 'student', password: ''}
 );
 
 app.set('view engine','ejs');
@@ -30,61 +30,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(fileUpload());   
-
-app.post('/upload', function(req, res) {
-    var sampleFile;
-
-    if (!req.files.sampleFile) {
-        res.send('No file was uploaded.');
-        return;
-    }
-
-    MongoClient.connect(mongourl,function(err,db) {
-      console.log('Connected to mlab.com');
-      assert.equal(null,err);
-      create(db, req.files.sampleFile,req.body,req.session, function(result) {
-        db.close();
-        if (result.insertedId != null) {
-          res.status(200);
-          res.redirect('/')
-        } else {
-          res.status(500);
-          res.end(JSON.stringify(result));
-        }
-      });
-    });
-});
-
-
-function create(db,bfile,rrr,sss,callback) {
-  console.log(bfile);
-  db.collection('restaurants').insertOne({
-	"name":rrr.name,
-	"borough": rrr.borough,
-	"cuisine": rrr.cuisine,
-	"street":rrr.street,
-	"building":rrr.building,
-	"zipcode":rrr.zipcode,
-	"gps1":rrr.gps1,
-	"gps2":rrr.gps2,
-	"owner":sss.username,
-	"photo" : new Buffer(bfile.data).toString('base64'),
-	"photo mimetype" : bfile.mimetype
-
-	  
-	  
-  }, function(err,result) {
-    if (err) {
-      console.log('insertOne Error: ' + JSON.stringify(err));
-      result = err;
-    } else {
-      console.log("Inserted _id = " + result.insertId);
-    }
-    callback(result);
-  });
-}
-
-
 
 app.get('/',function(req,res) {
 	console.log(req.session);
@@ -111,7 +56,7 @@ app.get('/read',function(req,res) {
 });
 
 app.get('/login',function(req,res) {
-	res.sendFile(__dirname + '/login.html');
+	res.render('login');
 });
 
 app.post('/login',function(req,res) {
@@ -139,7 +84,58 @@ app.get('/create',function(req,res) {
 		res.render('create',{name:req.session.username});
 	}
 });
+
+app.post('/upload', function(req, res) {
+    var sampleFile;	
 	
+     if (!req.files.sampleFile) {
+        MongoClient.connect(mongourl,function(err,db) {
+      	assert.equal(null,err);
+	db.collection('restaurants').insertOne({
+		"name":req.body.name,
+		"borough": req.body.borough,
+		"cuisine": req.body.cuisine,
+		"street":req.body.street,
+		"building":req.body.building,
+		"zipcode":req.body.zipcode,
+		"gps1":req.body.gps1,
+		"gps2":req.body.gps2,
+		"owner":req.session.username
+	});
+	});
+	res.redirect('/');
+	return;
+     }
+	
+    MongoClient.connect(mongourl,function(err,db) {
+      assert.equal(null,err);
+      create(db, req.files.sampleFile,req.body,req.session, function(result) {
+        db.close();
+        res.redirect('/');
+	return;
+      });
+    });
+});
+
+function create(db,bfile,rrr,sss,callback) {
+  db.collection('restaurants').insertOne({
+	"name":rrr.name,
+	"borough": rrr.borough,
+	"cuisine": rrr.cuisine,
+	"street":rrr.street,
+	"building":rrr.building,
+	"zipcode":rrr.zipcode,
+	"gps1":rrr.gps1,
+	"gps2":rrr.gps2,
+	"owner":sss.username,
+	"photo" : new Buffer(bfile.data).toString('base64'),
+	"photo_mimetype" : bfile.mimetype	  
+	  
+  }, function(err,result) {
+    callback(result);
+  });
+}
+
 app.get('/showdetails', function(req,res) {
 	console.log(req.session);
 	if (!req.session.authenticated) {
@@ -157,13 +153,17 @@ app.get('/showdetails', function(req,res) {
 				break;
 			}
 		}
-		if (item) {
+		if ((!items[i].photo) || (items[i].photo_mimetype == "application/pdf") && (!items[i].gps1) || (!items[i].gps2)) {
 			db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
-					res.render('details', {r: items[i], g: rnames});
+					res.render('detailsnpnm', {r: items[i], g: rnames});
+		
 			});
-		} else {
-			res.status(500).end(req.query.id + ' not found!');
-		}
+		} 
+		
+		
+		db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
+					res.render('details', {r: items[i], g: rnames});
+		});
 		} else {
 			res.status(500).end('id missing!');
 		}
@@ -209,13 +209,10 @@ app.get('/edit',function(req,res) {
 	}
 });
 
-
 app.post('/update', function(req, res) {
     var sampleFile;
-
- if (!req.files.sampleFile) {
-      
-	MongoClient.connect(mongourl, function(err, db) {
+    if (!req.files.sampleFile) {
+        MongoClient.connect(mongourl, function(err, db) {
 		assert.equal(err,null);
 			db.collection('restaurants').update({_id: ObjectId(req.body.id)}, {
 			$set: {
@@ -238,81 +235,41 @@ app.post('/update', function(req, res) {
 	res.redirect('/')
         return;
     }
-
-    MongoClient.connect(mongourl,function(err,db) {
-      console.log('Connected to mlab.com');
-      assert.equal(null,err);
-      up(db, req.files.sampleFile,req.body,req.session, function(result) {
-        db.close();
-        if (result.insertedId != null) {
-          res.status(200);
-          res.redirect('/')
-        } else {
-          res.status(500);
-	  res.redirect('/')
-          res.end(JSON.stringify(result));
-
-        }
-      });
-    });
+    	MongoClient.connect(mongourl,function(err,db) {
+     	 console.log('Connected to mlab.com');
+      	assert.equal(null,err);
+     	 update(db, req.files.sampleFile,req.body, function(result) {
+       	 db.close();
+       	 res.redirect('/');
+     	 });
+    	});
 });
 
-
-function up(db,bfile,rrr,sss,callback) {
+function update(db,bfile,rrr,callback) {
   console.log(bfile);
+ db.collection('restaurants').update({_id: ObjectId(rrr.id)}, {
+			$set: {
+			    "name": rrr.name,
+			    "borough": rrr.borough,
+			    "cuisine": rrr.cuisine,
+			    "street": rrr.street,
+			    "building": rrr.building,
+			    "zipcode": rrr.zipcode,
+			    "gps1": rrr.gps1,
+			    "gps2": rrr.gps2,
+			    "photo" : new Buffer(bfile.data).toString('base64'),
+			    "photo_mimetype" : bfile.mimetype
+			}	  
+	  
+  }, function(err,result) {
+    callback(result);
+  });
 	db.collection('grades').update({r_id: rrr.id}, {
 			$set: {
 			    "rname": rrr.name
 			}
-			});	
- db.collection('restaurants').update({_id: ObjectId(rrr.id)}, {
-			$set: {
-	"name":rrr.name,
-	"borough": rrr.borough,
-	"cuisine": rrr.cuisine,
-	"street":rrr.street,
-	"building":rrr.building,
-	"zipcode":rrr.zipcode,
-	"gps1":rrr.gps1,
-	"gps2":rrr.gps2,
-	"photo" : new Buffer(bfile.data).toString('base64'),
-	"photo mimetype" : bfile.mimetype}
-			 }, function(err,result) {
-    if (err) {
-      console.log('insertOne Error: ' + JSON.stringify(err));
-      result = err;
-    } else {
-      console.log("Inserted _id = " + result.insertId);
-    }
-    callback(result);
-  });
-}
-
-
-/*app.post('/update',function(req,res) {
-	MongoClient.connect(mongourl, function(err, db) {
-		assert.equal(err,null);
-			db.collection('restaurants').update({_id: ObjectId(req.body.id)}, {
-			$set: {
-			    "name": req.body.name,
-			    "borough": req.body.borough,
-			    "cuisine": req.body.cuisine,
-			    "street": req.body.street,
-			    "building": req.body.building,
-			    "zipcode": req.body.zipcode,
-			    "gps1": req.body.gps1,
-			    "gps2": req.body.gps2
-			}
 			});
-			db.collection('grades').update({r_id: req.body.id}, {
-			$set: {
-			    "rname": req.body.name
-			}
-			});	
-	});
-	res.redirect('/');
-});*/
-
+}
 
 app.get('/remove',function(req,res) {
 	console.log(req.session);
@@ -464,5 +421,19 @@ app.get('/gps', function(req,res) {
 		});
 	}
 });
+
+app.get('/api/restaurant/borough/Homantin',function(req,res){
+
+    var result = {};
+MongoClient.connect(mongourl, function(err, db) {
+	assert.equal(err,null);
+    result =db.collection("restaurants").find().toArray(function(err,items){
+	res.status(200).json(result).end();
+	
+});
+	});
+	
+});
+
 
 app.listen(process.env.PORT || 8099);
