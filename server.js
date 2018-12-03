@@ -431,7 +431,7 @@ app.get('/api/restaurant/borough/:place',function(req,res){
 MongoClient.connect(mongourl, function(err, db) {
 	assert.equal(err,null);
 	items.place =Number(req.params.place)
-    db.collection("restaurants").find({borough:req.params.place}).toArray(function(err,items.re}{
+    db.collection("restaurants").find({borough:req.params.place}).toArray(function(err,items}{
 	res.status(200).json(items).end();
 	
 });
