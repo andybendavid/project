@@ -154,19 +154,6 @@ app.get('/showdetails', function(req,res) {
 			}
 		}
 		
-			if ((!items[i].photo) || (items[i].photo_mimetype == "application/pdf"))
-			db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
-					res.render('detailsnophoton', {r: items[i], g: rnames});
-		
-			});
-		} 
-			if ((!items[i].gps1) || (!items[i].gps2)) {
-			db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
-					res.render('detailsnomap', {r: items[i], g: rnames});
-		
-			});
-		} 
-		
 		db.collection("grades").find({r_id: req.query.id}).toArray(function(err,rnames){
 					res.render('details', {r: items[i], g: rnames});
 		});
