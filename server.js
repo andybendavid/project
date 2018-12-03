@@ -425,7 +425,7 @@ app.get('/gps', function(req,res) {
 	}
 });
 
-app.get('/api/restaurant/brought/Homantin',function(req,res){ 
+app.get('/api/restaurant/borough/Homantin',function(req,res){ 
 MongoClient.connect(mongourl, function(err, db) {
 	assert.equal(err,null);
   db.collection("restaurants").find({brought: "Homantin"}).toArray(function(err,items){
